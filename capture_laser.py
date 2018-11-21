@@ -27,7 +27,7 @@ class capture_thread(threading.Thread):
     def run(self):
   	camera.capture("./dataset/" + file_name)
 
-while hz < 350:
+while hz <= 350:
 	samples = (np.sin(2 * np.pi * np.arange(fs * duration) * hz / fs)).astype(np.float32)
     	file_name = "dataset:" + time.strftime("%Y-%m-%d") + "_hz:" + str(hz) + ".jpg"
         play_freq = freq_thread()
