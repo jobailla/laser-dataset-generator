@@ -9,7 +9,7 @@ from fractions import Fraction
 ###################### CAPTURE INFO #####################
 ampli_info = "Little Devil"
 ampli_volume = "3"
-laser_info = "Green class 3"
+laser_info = "Green class 2"
 camera_info = "Sony IMX219 V2.1 8 MPX 1080p30 - 720p60"
 mambrane_info = "10 day"
 #########################################################
