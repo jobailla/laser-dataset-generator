@@ -6,7 +6,7 @@ import pyaudio
 import threading
 from datetime import datetime
 import numpy as np
-#from picamera import PiCamera
+from picamera import PiCamera
 
 mambrane_fix_date = "13-11-2018"
 date = time.strftime("%d-%m-%Y")
@@ -30,7 +30,7 @@ a = 2.0
 
 volume = 0.1    # range [0.0, 1.0]
 fs = 44100
-duration = 3
+duration = 3.0
 samples_1 = 0.0
 samples_2 = 0.0
 file_name = 0

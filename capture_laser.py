@@ -30,7 +30,7 @@ p = pyaudio.PyAudio()
 volume = 0.5     # range [0.0, 1.0]
 fs = 44100
 duration = 2.5
-stream = p.open(format=pyaudio.paFloat32, channels= 1, rate=fs, output=True)
+stream = p.open(format = pyaudio.paFloat32, channels = 1, rate = fs, output = True)
 samples = 0
 file_name = 0
 
