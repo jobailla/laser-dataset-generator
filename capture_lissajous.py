@@ -1,6 +1,5 @@
 import os
 import sys
-import sys
 import time
 import pyaudio
 import threading
@@ -11,6 +10,7 @@ import numpy as np
 mambrane_fix_date = "13-11-2018"
 date = time.strftime("%d-%m-%Y")
 mambrane_age = datetime.strptime(date, "%d-%m-%Y") - datetime.strptime(mambrane_fix_date, "%d-%m-%Y")
+
 ###################### CAPTURE INFO #####################
 ampli_info = "Little Devil"
 ampli_volume = "3"
@@ -23,15 +23,17 @@ mambrane_info = str(mambrane_age.days) + " days"
 #camera.resolution = (1280, 720)
 #camera.start_preview()
 
+nb_f = 2
+f = [] * nb_f
 if (len(sys.argv) > 1):
-    f1 = float(sys.argv[1])
-f2 = 0.0        # f2 = n+1/n * f1
+    f.insert(0, float(sys.argv[1]))
+f.insert(1, 0.0)
 a = 2.0
 
 volume = 0.1    # range [0.0, 1.0]
 fs = 44100
 duration = 3.0
-samples = [0.0] * 2
+samples = [0.0] * nb_f
 file_name = 0
 
 path = "./dataset_lissajous/"
@@ -42,8 +44,8 @@ csv.write("ampli : " + ampli_info + ",\nampli_volume : " + ampli_volume + ",\nco
 csv.close()
 
 p = pyaudio.PyAudio()
-stream = [] * 2
-for x in range(2):
+stream = [] * nb_f
+for x in range(nb_f):
     stream.insert(x, p.open(format = pyaudio.paFloat32, channels = 1, rate = fs, output = True))
 
 class freq_1_thread(threading.Thread):
@@ -71,29 +73,28 @@ def start_threads():
     play_freq_2.join()
 
 def stop_stream():
-    stream[0].stop_stream()
-    stream[1].stop_stream()
-    stream[0].close()
-    stream[1].close()
-    stream.stop_stream()
-    stream.close()
+    for x in range(nb_f):
+        stream[x].stop_stream()
+        stream[x].close()
+        stream.stop_stream()
+        stream.close()
 
 if (len(sys.argv) > 1):
-    while f1 <= float(sys.argv[2]):
+    while f[0] <= float(sys.argv[2]):
         try:
-            f2 = (a + 1.0) / a * f1
-            samples[0] = (np.sin(2 * np.pi * np.arange(fs * duration) * f1 / fs)).astype(np.float32)
-            samples[1] = (np.sin(2 * np.pi * np.arange(fs * duration) * f2 / fs)).astype(np.float32)
-            file_name = "dataset:" + date + "_hz:" + str(round(f1, 1)) + "_" + str(round(f2,3)) + "_lsj:" + str(int(a + 1)) + "." + str(int(a)) + ".jpg"
+            f[1] = (a + 1.0) / a * f[0]
+            for x in range(nb_f):
+                samples.insert(0, (np.sin(2 * np.pi * np.arange(fs * duration) * f[x] / fs)).astype(np.float32))
+            file_name = "dataset:" + date + "_hz:" + str(round(f[0], 1)) + "_" + str(round(f[1],3)) + "_lsj:" + str(int(a + 1)) + "." + str(int(a)) + ".jpg"
             start_threads()
-            sys.stdout.write("\033[1;32;40m" + str(f1) +  "\033[0;37;40m + " + "\033[1;34;40m" +  str(round(f2, 3)) + "\t\033[0;37;40m hz\t" + "\033[1;33;40m" + str(int(a + 1)) + "/" + str(int(a)) + "\n\033[0;37;40m")
+            sys.stdout.write("\033[1;32;40m" + str(f[0]) +  "\033[0;37;40m + " + "\033[1;34;40m" +  str(round(f[1], 3)) + "\t\033[0;37;40m hz\t" + "\033[1;33;40m" + str(int(a + 1)) + "/" + str(int(a)) + "\n\033[0;37;40m")
             sys.stdout.flush()
             a += 1
             if a == 10.0:
                 sys.stdout.write("\n")
                 sys.stdout.flush()
                 a = 1
-                f1 += 1.0
+                f[0] += 1.0
         except KeyboardInterrupt:
             exit(0)
     stop_stream()
