@@ -5,7 +5,7 @@ import pyaudio
 import threading
 from datetime import datetime
 import numpy as np
-#from picamera import PiCamera
+from picamera import PiCamera
 
 mambrane_fix_date = "13-11-2018"
 date = time.strftime("%d-%m-%Y")
@@ -19,9 +19,9 @@ camera_info = "Sony IMX219 V2.1 8 MPX 1080p30 - 720p60"
 mambrane_info = str(mambrane_age.days) + " days"
 #########################################################
 
-#camera = PiCamera()
-#camera.resolution = (1280, 720)
-#camera.start_preview()
+camera = PiCamera()
+camera.resolution = (1280, 720)
+camera.start_preview()
 
 nb_f = 2
 f = [] * nb_f
@@ -63,12 +63,12 @@ class capture_thread(threading.Thread):
 def start_threads():
     play_freq_1 = freq_1_thread()
     play_freq_2 = freq_2_thread()
-#    cap_laser = capture_thread()
+    cap_laser = capture_thread()
     play_freq_1.start()
     play_freq_2.start()
     time.sleep(0.5)
-#    cap_laser.start()
-#    cap_laser.join()
+    cap_laser.start()
+    cap_laser.join()
     play_freq_1.join()
     play_freq_2.join()
 
